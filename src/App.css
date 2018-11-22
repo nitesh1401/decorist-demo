@@ -1,0 +1,109 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 40vmin;
+}
+
+.App-header {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding-top: 20px;
+  padding-bottom: 30px;
+  border-radius: 10px;
+  background-color: #c8cacf;
+  min-height: 300px;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: rgb(29, 28, 28);
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.Form-element {
+  width: 100%
+}
+
+.Submit-button {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.Reset-password {
+  padding-top: 10px;
+  margin-bottom: 10px;
+}
+
+.NavItem {
+  margin: 0 20px;
+}
+
+.Para {
+  margin-bottom: 0;
+}
+
+.Button {
+  background-color: #fff;
+  border: 1px solid #000;
+  border-radius: 3px;
+  width: 80px;
+  height: 40px;
+}
+
+.Button:hover{
+  background-color: #000;
+  color: #fff;
+  cursor: pointer;
+}
+
+.Font-14 {
+  font-size: 14px;
+}
+
+.Backdrop {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.Modal {
+  position: fixed;
+  z-index: 500;
+  background-color: white;
+  width: 70%;
+  border: 1px solid #ccc;
+  box-shadow: 1px 1px 1px black;
+  padding: 16px;
+  left: 15%;
+  top: 8%;
+  box-sizing: border-box;
+  transition: all 0.3s ease-out;
+}
+
+@media (min-width: 600px) {
+  .Modal {
+      width: 500px;
+      left: calc(50% - 250px);
+  }
+}
