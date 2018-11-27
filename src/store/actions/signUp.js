@@ -8,11 +8,10 @@ export const signUpStart = () => {
     };
 };
 
-export const signUpSuccess = (token, userId) => {
+export const signUpSuccess = (token) => {
     return {
         type: actionTypes.SIGNUP_SUCCESS,
-        idToken: token,
-        userId: userId
+        idToken: token
     };
 };
 
@@ -41,17 +40,17 @@ export const signUp = (userName, email, password) => {
     return dispatch => {
         dispatch(signUpStart());
         const signUpData = {
-            username: "atul", //userName,
-            email: "abc@xyz.com", //email,
-            password1: "Nkt@1234", //password,
-            password2: "Nkt@1234", //password,
+            username: userName,
+            email: email,
+            password1: password,
+            password2: password,
         };
         console.log(signUpData);
         let url = 'http://users.localhost/api/v1/accounts/signup/'
         axios.post(url, signUpData)
             .then(response => {
                 console.log(response);
-                // dispatch(signUpSuccess(response.data.idToken, response.data.localId));
+                dispatch(signUpSuccess(response.data));
                 // dispatch(checkAuthTimeout(response.data.expiresIn));
             })
             .catch(err => {

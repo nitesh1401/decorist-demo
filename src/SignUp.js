@@ -3,10 +3,15 @@ import { connect } from 'react-redux';
 import {
     Container, Col, Form,
     FormGroup, Label, Input,
-    Button, FormFeedback
+    Button, FormFeedback, Row
     } from 'reactstrap';
 import * as actions from './store/actions/signUp';
 import './App.css';
+
+const regExp = {
+  email: /^[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/gi,
+  password: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[.~!@#$%^&*])[a-zA-Z0-9.~!@#$%^&*]{8,30}$/g
+}
 
 class SignUp extends Component{
     constructor(props) {
@@ -18,6 +23,7 @@ class SignUp extends Component{
             password: ""
         }
         this.submitHandler = this.submitHandler.bind(this);
+        this.logInHandler = this.logInHandler.bind(this);
         this.inputChangedHandler = this.inputChangedHandler.bind(this);
     }
 
@@ -26,12 +32,23 @@ class SignUp extends Component{
       this.props.onSignUp(this.state.firstName+this.state.lastName, this.state.email, this.state.password);
     }
 
+    componentDidUpdate(prevProps) {
+      if(this.props.isSignedIn !== prevProps.isSignedIn) {
+          console.log("inside did update signUp: ", this.props.isSignedIn);
+          this.props.openModal(true);
+      }
+    }
+
+    logInHandler() {
+      this.props.openModal("logIn");
+    }
+
     inputChangedHandler(event) {
       const updatedFormValues = { ...this.state };
-      console.log("Input", event.target.name, event.target.value, this.state);
+      // console.log("Input", event.target.name, event.target.value, this.state);
       updatedFormValues[event.target.name] = event.target.value;
-      console.log(updatedFormValues);
-      this.setState({updatedFormValues}); 
+      // console.log("Updated values: ", updatedFormValues);
+      this.setState(updatedFormValues); 
     }
 
     render() {
@@ -50,7 +67,6 @@ class SignUp extends Component{
           <Form className="Form-element">
             <Col>
               <FormGroup>
-                <Label>Name</Label>
                 <Input
                   type="text"
                   name="firstName"
@@ -71,7 +87,6 @@ class SignUp extends Component{
             </Col>
             <Col>
               <FormGroup>
-                <Label>Email</Label>
                 <Input
                   type="email"
                   name="email"
@@ -79,8 +94,8 @@ class SignUp extends Component{
                   placeholder="Email"
                   onChange={this.inputChangedHandler}
                   // onChange={this.props.validateEmail}
-                  valid={ this.props.message.emailState === 'has-success' }
-                  invalid={ this.props.message.emailState === 'has-failure' }
+                  // valid={ this.props.message.email === 'has-success' }
+                  // invalid={ this.props.message.email === 'has-failure' }
                 />
                 <FormFeedback>
                     It's wrong! Please enter a valid Email address.
@@ -89,7 +104,6 @@ class SignUp extends Component{
             </Col>
             <Col>
               <FormGroup>
-                <Label for="examplePassword">Password</Label>
                 <Input
                   type="password"
                   name="password"
@@ -97,12 +111,12 @@ class SignUp extends Component{
                   placeholder="Password"
                   onChange={this.inputChangedHandler}
                   // onChange={this.props.validatePassword}
-                  valid={ this.props.message.passwordState === 'has-success' }
-                  invalid={ this.props.message.passwordState === 'has-failure' }
+                  // valid={ this.props.message.password === 'has-success' }
+                  // invalid={ this.props.message.password === 'has-failure' }
                 />
                 <FormFeedback>
-                    Password must a combination of small & capital letters, digits, and special characters!
-                    Also minimum length should be 8 characters.
+                    Password must be a combination of small & capital letters, digits, and special characters!
+                    Also minimum length should be 8 characters.  
                 </FormFeedback>
               </FormGroup>
             </Col>
@@ -115,6 +129,11 @@ class SignUp extends Component{
               <Button disabled className="Submit-button">SIGN UP WITH FACEBOOK</Button>
             </Col>
           </Form>
+          <Row>
+              <Col className="Font-14">
+              Already a Member? <a href="#" onClick={this.logInHandler}> Log In </a>
+              </Col>
+          </Row>
         </Container>  
       );
     }
@@ -122,8 +141,9 @@ class SignUp extends Component{
 
 const mapStateToProps = state => {
   return {
-      loading: state.loading,
-      error: state.error
+      loading: state.signUp.loading,
+      error: state.signUp.error,
+      isSignedIn: state.signUp.token !== null
   };
 };
 

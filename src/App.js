@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { 
   Navbar,
   NavbarBrand,
   Nav,
   NavItem,
-  NavLink } from 'reactstrap';
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem } from 'reactstrap';
 import { BrowserRouter } from 'react-router-dom';
 import LogIn from './LogIn';
 import ResetPassword from './ResetPassword';
@@ -12,80 +16,107 @@ import SignUp from './SignUp';
 import ImgHero from './img-hero.jpg';
 import Aux from './hoc/Aux';
 import Modal from './components/Modal/Modal'
+import AfterResetPassword from './AfterResetPassword';
+import LogOut from './LogOut';
+
+import * as actions from './store/actions/logIn';
+
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      validate : {
-          emailState: "",
-          passwordState: ""
-      },
       showModal: false,
-      isLogIn: false
+      modalContent: "",
+      userName: ""
     }
-    this.emailValidator = this.emailValidator.bind(this);
-    this.passwordValidator = this.passwordValidator.bind(this);
     this.modalHandler = this.modalHandler.bind(this);
     this.closeModal = this.closeModal.bind(this);
-  }
-  
-  emailValidator(e) {
-    const emailRex = /[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/gi;
-    let message="";
-    if (emailRex.test(e.target.value)) {
-      message = 'has-success';
-    } else {
-      message = 'has-failure';
-    }
-    this.setState({ ...this.state, validate:{...this.state.validate, emailState: message} });
+    this.loggedOut = this.loggedOut.bind(this);
   }
 
-  passwordValidator(e) {
-    const pwdRex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[.~!@#$%^&*])[a-zA-Z0-9.~!@#$%^&*]{8,30}$/g;
-    let message="";
-    if (pwdRex.test(e.target.value)) {
-      message = 'has-success';
-    } else {
-      message = 'has-failure';
-    }
-    this.setState({ ...this.state, validate:{...this.state.validate, passwordState: message} });
+  componentDidMount () {
+    this.props.onTryAutoSignup();
+  }  
+
+  // componentDidUpdate(prevProps) {
+  //   if(this.props.userName) {
+  //       this.setState({...this.setState, userName: this.props.userName});
+  //   }
+  // }
+
+  modalHandler(modalContent) {
+    this.setState({showModal: true, modalContent: modalContent});
   }
 
-  modalHandler(isLogIn) {
-    this.setState({showModal: true, isLogIn: isLogIn});
+  closeModal(data) {
+    this.setState({...this.state, showModal: false, userName: data});
   }
 
-  closeModal() {
-    this.setState({showModal: false});
+  loggedOut() {
+    this.setState({...this.state, modalContent: ""})
   }
 
   render() {
+    let modalContent = null;
+    switch(this.state.modalContent) {
+      case "logIn": 
+      modalContent = <LogIn
+                      openModal = {(modalContent)=>{this.modalHandler(modalContent)}}
+                      closeModal = {(data)=>{this.closeModal(data)}} />;
+      break;                
+      case "signUp": 
+      modalContent = <SignUp
+                      openModal = {(modalContent)=>{this.modalHandler(modalContent)}}
+                      closeModal = {(data)=>{this.closeModal(data)}}/>;
+      break;                
+      case "resetPassword": 
+      modalContent = <ResetPassword
+                      openModal = {(modalContent)=>{this.modalHandler(modalContent)}}
+                      closeModal = {(data)=>{this.closeModal(data)}} />;
+      break;                
+      case "afterResetPassword": 
+      modalContent = <AfterResetPassword
+                      closeModal = {(data)=>{this.closeModal(data)}} />;
+      break;                       
+      default: modalContent = null;
+    }
+
+    let navData = null;
+    if((this.state.modalContent === "" || this.state.userName === "") && (!this.props.isAuthenticated)){
+      navData = (<NavItem className="NavItem">
+                  <button className="Button" onClick={() => this.modalHandler("logIn")} > 
+                    Log In 
+                  </button>
+                </NavItem>);
+    } else {
+      navData = (<UncontrolledDropdown nav inNavbar>
+                  <DropdownToggle nav caret>
+                    Hi {this.state.userName ? this.state.userName : this.props.userName}
+                  </DropdownToggle>
+                  <DropdownMenu right>
+                    <DropdownItem>
+                      Your Projects
+                    </DropdownItem>
+                    <DropdownItem divider />
+                    <LogOut loggingOut={this.loggedOut}/>
+                  </DropdownMenu>
+                </UncontrolledDropdown>);
+    }
     return (
-      // <ResetPassword />
       <BrowserRouter>
           <Aux>
-            <Modal show={this.state.showModal} modalClosed={this.closeModal}>
-              {this.state.isLogIn ? 
-              <LogIn 
-                validateEmail={this.emailValidator} 
-                validatePassword={this.passwordValidator}
-                message={this.state.validate}/> : 
-              <SignUp 
-                validateEmail={this.emailValidator} 
-                validatePassword={this.passwordValidator}
-                message={this.state.validate}/>}
+            <Modal show={this.state.showModal} modalClosed={(emptyString)=>{this.closeModal(emptyString)}}>
+              {modalContent}
             </Modal>
             <div>
               <Navbar fixed='top'  expand="md">
                 <NavbarBrand href="/">Decorist Demo</NavbarBrand>
                   <Nav className="ml-auto" navbar>
-                    <NavItem className="NavItem">
-                      <button className="Button" onClick={() => this.modalHandler(true)} > Log In </button>
-                    </NavItem>
-                    <NavItem className="NavItem">
+                    {navData}
+                    {/* <NavItem className="NavItem">
                     <button className="Button" onClick={() => this.modalHandler(false)} > Sign Up </button>
-                    </NavItem>
+                    </NavItem> */}
                   </Nav>
               </Navbar>
 
@@ -99,4 +130,18 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    isAuthenticated: state.logIn.userName != null,
+    userName: state.logIn.userName
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onTryAutoSignup: () => dispatch( actions.authCheckState() )
+  };
+};
+
+export default connect( mapStateToProps, mapDispatchToProps )( App );
+// export default App;

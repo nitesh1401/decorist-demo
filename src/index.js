@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware, compose } from 'redux';
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -10,11 +10,20 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 import signUpReducer from './store/reducers/signUp';
+import logInReducer from './store/reducers/logIn';
+import resetPasswordReducer from './store/reducers/resetPassword';
+import logOutReducer from './store/reducers/logOut';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
+const rootReducer = combineReducers({
+    signUp: signUpReducer,
+    logIn: logInReducer,
+    resetPassword: resetPasswordReducer,
+    logOut: logOutReducer
+});
 
-const store = createStore(signUpReducer, composeEnhancers(
+const store = createStore(rootReducer, composeEnhancers(
     applyMiddleware(thunk)
 ));
 
