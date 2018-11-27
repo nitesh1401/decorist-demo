@@ -28,12 +28,16 @@ export const logIn = (userName, password) => {
         dispatch(logInStart());
         //axios.defaults.withCredentials = true;
         const logInData = {
-            username: userName,
-            password: password
+            username: "madhuri.lata+admin@decorist.com",
+            password: "Password12"
         };
-        let url = 'http://users.localhost/api/v1/accounts/login/';
+        let url = '/api/v1/accounts/login/';
+        // let withCredentials;
         let config = {
-            withCredentials: true
+            withCredentials : true
+            // "headers" : {
+            //     withCredentials: true
+            // }
         }
         axios.post(url, logInData, config)
             .then(response => {
