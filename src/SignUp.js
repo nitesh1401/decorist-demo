@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import {
     Container, Col, Form,
-    FormGroup, Label, Input,
+    FormGroup, Input,
     Button, FormFeedback, Row
     } from 'reactstrap';
 import * as actions from './store/actions/signUp';
@@ -35,11 +35,12 @@ class SignUp extends Component{
     componentDidUpdate(prevProps) {
       if(this.props.isSignedIn !== prevProps.isSignedIn) {
           console.log("inside did update signUp: ", this.props.isSignedIn);
-          this.props.openModal(true);
+          this.props.openModal("logIn");
       }
     }
 
     logInHandler() {
+      this.props.afterLogIn();
       this.props.openModal("logIn");
     }
 
@@ -56,7 +57,7 @@ class SignUp extends Component{
 
       if (this.props.error) {
           errorMessage = (
-              <p>{this.props.error.message}</p>
+              <p style={{color:"red"}}>{this.props.error}</p>
           );
       }
 
@@ -67,22 +68,28 @@ class SignUp extends Component{
           <Form className="Form-element">
             <Col>
               <FormGroup>
-                <Input
-                  type="text"
-                  name="firstName"
-                  id="firstName"
-                  placeholder="First Name"
-                  className="Name"
-                  onChange={this.inputChangedHandler}
-                />
-                <Input
-                  type="text"
-                  name="lastName"
-                  id="lastName"
-                  placeholder="Last Name"
-                  className="Name"
-                  onChange={this.inputChangedHandler}
-                />
+                <Row>
+                  <Col xs="6">
+                    <Input
+                    type="text"
+                    name="firstName"
+                    id="firstName"
+                    placeholder="First Name"
+                    className="Name"
+                    onChange={this.inputChangedHandler}
+                    />
+                  </Col>
+                  <Col xs="6">
+                    <Input
+                    type="text"
+                    name="lastName"
+                    id="lastName"
+                    placeholder="Last Name"
+                    className="Name"
+                    onChange={this.inputChangedHandler}
+                    />
+                  </Col>
+                </Row>
               </FormGroup>
             </Col>
             <Col>
@@ -149,7 +156,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-      onSignUp: (userName, email, password) => dispatch( actions.signUp(userName, email, password) )
+      onSignUp: (userName, email, password) => dispatch( actions.signUp(userName, email, password) ),
+      afterLogIn: () => dispatch(actions.clearErrorMessage())
   };
 };
 

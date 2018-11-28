@@ -46,7 +46,7 @@ export const signUp = (userName, email, password) => {
             password2: password,
         };
         console.log(signUpData);
-        let url = 'http://users.localhost/api/v1/accounts/signup/'
+        let url = '/api/v1/accounts/signup/'
         axios.post(url, signUpData)
             .then(response => {
                 console.log(response);
@@ -58,3 +58,9 @@ export const signUp = (userName, email, password) => {
             });
     };
 };
+
+export const clearErrorMessage = () => {
+    return dispatch => {
+        dispatch({ type: actionTypes.CLEAR_ERROR_MESSAGE });
+    }     
+}

@@ -26,18 +26,13 @@ export const logInFail = (error) => {
 export const logIn = (userName, password) => {
     return dispatch => {
         dispatch(logInStart());
-        //axios.defaults.withCredentials = true;
         const logInData = {
-            username: "madhuri.lata+admin@decorist.com",
-            password: "Password12"
+            username: userName,
+            password: password
         };
         let url = '/api/v1/accounts/login/';
-        // let withCredentials;
         let config = {
             withCredentials : true
-            // "headers" : {
-            //     withCredentials: true
-            // }
         }
         axios.post(url, logInData, config)
             .then(response => {
@@ -45,10 +40,9 @@ export const logIn = (userName, password) => {
                 localStorage.setItem("idToken",response.data);
                 localStorage.setItem("userName",userName);
                 dispatch(logInSuccess(response.data, userName));
-                // dispatch(checkAuthTimeout(response.data.expiresIn));
             })
             .catch(err => {
-                dispatch(logInFail("SignUp Failed"));
+                dispatch(logInFail("LogIn Failed"));
             });
     };
 };
@@ -62,3 +56,31 @@ export const authCheckState = () => {
         } 
     };
 };
+
+export const logOutSuccess = () => {
+    return {
+        type: actionTypes.LOGOUT
+    };
+};
+
+export const logOut = () => {
+    return dispatch => {
+
+        localStorage.removeItem('idToken');
+        localStorage.removeItem('userName');
+        let url = '/api/v1/accounts/logout/'
+        axios.get(url, {withCredentials: true})
+            .then(response => {
+                dispatch(logOutSuccess());
+            })
+            .catch(err => {
+                // dispatch(resetPasswordFail("SignUp Failed"));
+            });
+    };
+};
+
+export const clearErrorMessage = () => {
+    return dispatch => {
+        dispatch({ type: actionTypes.CLEAR_ERROR_MESSAGE });
+    }     
+}

@@ -14,8 +14,8 @@ class LogIn extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: {value: "", isValid: true},
-            password: {value: "", isValid: true},
+            email: {value: null, isValid: true},
+            password: {value: null, isValid: true},
             formIsValid: false
         }
         // this.validator = this.validator.bind(this);
@@ -31,6 +31,7 @@ class LogIn extends Component {
     }
 
     signUpHandler(event) {
+        this.props.afterLogIn();
         this.props.openModal("signUp");
     }
 
@@ -40,7 +41,8 @@ class LogIn extends Component {
 
     componentDidUpdate(prevProps) {
         if(this.props.isLoggedIn !== prevProps.isLoggedIn) {
-            this.props.closeModal(this.props.userName);
+            // this.props.closeModal(this.props.userName);
+            this.props.openModal("logInMessage");
         }
     }
 
@@ -59,13 +61,19 @@ class LogIn extends Component {
     }
 
     render() {
-
-        // let redirectAfterLogin = null;
+        let errorMessage = null;
+  
+        if (this.props.error) {
+            errorMessage = (
+                <p style={{color:"red"}}>{this.props.error}</p>
+            );
+        }
 
         return ( 
             <Aux>
                 <Container className="App-header">
                 <h2 className="text-center">Sign In</h2>
+                {errorMessage}
                     <Form className="Form-element">
                     <Col>
                         <FormGroup>
@@ -142,7 +150,8 @@ const mapStateToProps = state => {
   
 const mapDispatchToProps = dispatch => {
     return {
-        onLogIn: (email, password) => dispatch( actions.logIn(email, password) )
+        onLogIn: (email, password) => dispatch( actions.logIn(email, password) ),
+        afterLogIn: () => dispatch(actions.clearErrorMessage())
     };
 };
   

@@ -12,20 +12,16 @@ import * as serviceWorker from './serviceWorker';
 import signUpReducer from './store/reducers/signUp';
 import logInReducer from './store/reducers/logIn';
 import resetPasswordReducer from './store/reducers/resetPassword';
-import logOutReducer from './store/reducers/logOut';
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+// const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const rootReducer = combineReducers({
     signUp: signUpReducer,
     logIn: logInReducer,
-    resetPassword: resetPasswordReducer,
-    logOut: logOutReducer
+    resetPassword: resetPasswordReducer
 });
 
-const store = createStore(rootReducer, composeEnhancers(
-    applyMiddleware(thunk)
-));
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
 const app = (
     <Provider store={store}>

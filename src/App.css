@@ -113,3 +113,18 @@
       left: calc(50% - 200px);
   }
 }
+
+.AfterResetPassword {
+  margin: 20px 30px;
+  text-align: center;
+}
+
+.AfterResetPassword div {
+  margin-bottom: 10px;
+}
+
+.NavItemColor {
+  color: #333333;
+  font-size: 14px;
+  margin-right: 20px;
+}

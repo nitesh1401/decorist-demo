@@ -8,8 +8,9 @@ import {
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem } from 'reactstrap';
-import { BrowserRouter } from 'react-router-dom';
+  DropdownItem,
+  NavLink } from 'reactstrap';
+import { BrowserRouter, Route } from 'react-router-dom';
 import LogIn from './LogIn';
 import ResetPassword from './ResetPassword';
 import SignUp from './SignUp';
@@ -18,6 +19,8 @@ import Aux from './hoc/Aux';
 import Modal from './components/Modal/Modal'
 import AfterResetPassword from './AfterResetPassword';
 import LogOut from './LogOut';
+import decoristLogo from './images/decorist-logo.svg';
+import ConfirmPassword from './confirmPassword';
 
 import * as actions from './store/actions/logIn';
 
@@ -27,8 +30,8 @@ class App extends Component {
     super(props);
     this.state = {
       showModal: false,
-      modalContent: "",
-      userName: ""
+      modalContent: null,
+      userName: null
     }
     this.modalHandler = this.modalHandler.bind(this);
     this.closeModal = this.closeModal.bind(this);
@@ -39,22 +42,16 @@ class App extends Component {
     this.props.onTryAutoSignup();
   }  
 
-  // componentDidUpdate(prevProps) {
-  //   if(this.props.userName) {
-  //       this.setState({...this.setState, userName: this.props.userName});
-  //   }
-  // }
-
   modalHandler(modalContent) {
     this.setState({showModal: true, modalContent: modalContent});
   }
 
   closeModal(data) {
-    this.setState({...this.state, showModal: false, userName: data});
+    this.setState({...this.state, showModal: false, userName: data, modalContent:null});
   }
 
   loggedOut() {
-    this.setState({...this.state, modalContent: ""})
+    this.setState({...this.state, modalContent: null, userName: null});
   }
 
   render() {
@@ -78,12 +75,18 @@ class App extends Component {
       case "afterResetPassword": 
       modalContent = <AfterResetPassword
                       closeModal = {(data)=>{this.closeModal(data)}} />;
+      break;                 
+      case "logInMessage": 
+      modalContent = (<div style={{textAlign: "center", margin:"20px", color:"green"}} >
+                        You are successfully loggedIn!
+                      </div>);
       break;                       
       default: modalContent = null;
     }
 
     let navData = null;
-    if((this.state.modalContent === "" || this.state.userName === "") && (!this.props.isAuthenticated)){
+    let logInMessage = null;
+    if((this.state.modalContent === null || this.props.userName === null) && (!this.props.isAuthenticated)){
       navData = (<NavItem className="NavItem">
                   <button className="Button" onClick={() => this.modalHandler("logIn")} > 
                     Log In 
@@ -92,31 +95,41 @@ class App extends Component {
     } else {
       navData = (<UncontrolledDropdown nav inNavbar>
                   <DropdownToggle nav caret>
-                    Hi {this.state.userName ? this.state.userName : this.props.userName}
+                    Hi {this.props.userName ? this.props.userName : null}
                   </DropdownToggle>
                   <DropdownMenu right>
                     <DropdownItem>
                       Your Projects
                     </DropdownItem>
                     <DropdownItem divider />
-                    <LogOut loggingOut={this.loggedOut}/>
+                    <LogOut loggingOut={this.loggedOut} setAppState={this.props.onTryAutoSignup}/>
                   </DropdownMenu>
                 </UncontrolledDropdown>);
     }
     return (
       <BrowserRouter>
           <Aux>
-            <Modal show={this.state.showModal} modalClosed={(emptyString)=>{this.closeModal(emptyString)}}>
+            <Route path="/" exact render={()=>{
+              return (<div>
+                <Modal show={this.state.showModal} modalClosed={(emptyString)=>{this.closeModal(emptyString)}}>
               {modalContent}
             </Modal>
             <div>
               <Navbar fixed='top'  expand="md">
-                <NavbarBrand href="/">Decorist Demo</NavbarBrand>
+                <NavbarBrand href="/">
+                  <img src={decoristLogo}></img>
+                </NavbarBrand>
+                  { logInMessage }
                   <Nav className="ml-auto" navbar>
+                  <NavItem>
+                <NavLink className="NavItemColor" href="#">Design Services</NavLink></NavItem>
+                <NavItem>
+                <NavLink className="NavItemColor" href="#">Our Designers</NavLink></NavItem>
+                <NavItem>
+                <NavLink className="NavItemColor" href="#">Client Projects</NavLink></NavItem>
+                <NavItem><NavLink className="NavItemColor" href="#">Design Bar</NavLink></NavItem>
+                <NavItem><NavLink className="NavItemColor" href="#" style={{marginRight : 400}}>Blog</NavLink></NavItem>
                     {navData}
-                    {/* <NavItem className="NavItem">
-                    <button className="Button" onClick={() => this.modalHandler(false)} > Sign Up </button>
-                    </NavItem> */}
                   </Nav>
               </Navbar>
 
@@ -124,6 +137,9 @@ class App extends Component {
                 <img src={ImgHero} alt="Hero" style={{top: '60px', position: 'absolute', backgroundAttachment: 'fixed', width: '100%'}} />
               </div>
             </div>
+              </div>);
+            }} />
+            <Route path="/reset" component={ConfirmPassword} />
           </Aux>
       </BrowserRouter>
      );
@@ -143,5 +159,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect( mapStateToProps, mapDispatchToProps )( App );
-// export default App;
+export default connect( mapStateToProps, mapDispatchToProps )(App);

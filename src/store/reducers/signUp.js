@@ -30,12 +30,19 @@ const signUpFail = (state, action) => {
 //     return updateObject(state, { token: null, userId: null });
 // };
 
+const clearErrorMessageReducer = (state) => {
+    console.log("clearErrorMessageReducer signup")
+    return updateObject( state, {
+        error: null
+     } );
+}
+
 const reducer = ( state = initialState, action ) => {
     switch ( action.type ) {
         case actionTypes.SIGNUP_START: return signUpStart(state, action);
         case actionTypes.SIGNUP_SUCCESS: return signUpSuccess(state, action);
         case actionTypes.SIGNUP_FAIL: return signUpFail(state, action);
-        // case actionTypes.AUTH_LOGOUT: return authLogout(state, action);
+        case actionTypes.CLEAR_ERROR_MESSAGE: return clearErrorMessageReducer(state);
         default:
             return state;
     }

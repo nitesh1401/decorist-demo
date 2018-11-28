@@ -13,7 +13,7 @@ export const logOut = () => {
 
         localStorage.removeItem('idToken');
         localStorage.removeItem('userName');
-        let url = 'http://users.localhost/api/v1/accounts/logout/'
+        let url = '/api/v1/accounts/logout/'
         axios.get(url, {withCredentials: true})
             .then(response => {
                 console.log(response);

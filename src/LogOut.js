@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Aux from './hoc/Aux';
 import { connect } from 'react-redux';
 import { DropdownItem } from 'reactstrap';
-import * as actions from './store/actions/logOut'
+import * as actions from './store/actions/logIn'
 
 class LogOut extends Component {
     constructor(props) {
@@ -11,15 +11,9 @@ class LogOut extends Component {
     }
 
     logOutHandler(event) {
-        event.preventDefault();
+        this.props.setAppState();
         this.props.onLogOut();
     }
-
-    // componentDidUpdate(prevProps) {
-    //     if(this.props.status !== prevProps.status) {
-    //         this.props.loggingOut();
-    //     }
-    // }
 
     render() {
         return(
@@ -33,11 +27,11 @@ class LogOut extends Component {
 
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
     return {
-        status: state.logOut.status,
-        loading: state.logOut.loading,
-        error: state.logOut.error
+        loading: state.logIn.loading,
+        error: state.logIn.error,
+        cookies: ownProps.cookies
     };
 };
   
