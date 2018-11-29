@@ -46,7 +46,7 @@ export const signUp = (userName, email, password) => {
             password2: password,
         };
         console.log(signUpData);
-        let url = '/api/v1/accounts/signup/'
+        let url = 'http://users.localhost/api/v1/accounts/signup/'
         axios.post(url, signUpData)
             .then(response => {
                 console.log(response);

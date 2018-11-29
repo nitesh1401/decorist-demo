@@ -30,7 +30,7 @@ export const logIn = (userName, password) => {
             username: userName,
             password: password
         };
-        let url = '/api/v1/accounts/login/';
+        let url = 'http://users.localhost/api/v1/accounts/login/';
         let config = {
             withCredentials : true
         }
@@ -68,7 +68,7 @@ export const logOut = () => {
 
         localStorage.removeItem('idToken');
         localStorage.removeItem('userName');
-        let url = '/api/v1/accounts/logout/'
+        let url = 'http://users.dev.decorist.com/api/v1/accounts/logout/'
         axios.get(url, {withCredentials: true})
             .then(response => {
                 dispatch(logOutSuccess());
