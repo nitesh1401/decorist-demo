@@ -42,7 +42,7 @@ export const resetPassword = (email) => {
         const resetPasswordData = {
             email: email
         };
-        let url = '/api/v1/accounts/password/reset/'
+        let url = 'https://users.dev.decorist.me/api/v1/accounts/password/reset/'
         axios.post(url, resetPasswordData)
             .then(response => {
                 console.log(response);
@@ -62,7 +62,7 @@ export const confirmPassword = (pass1, pass2, token, uid) => {
             "uid": uid,
             "token": token
         };
-        let url = '/api/v1/accounts/password/reset/confirm/'
+        let url = 'https://users.dev.decorist.me/api/v1/accounts/password/reset/confirm/'
         axios.post(url, confirmPasswordData)
             .then(response => {
                 console.log(response);
