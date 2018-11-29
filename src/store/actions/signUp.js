@@ -46,7 +46,7 @@ export const signUp = (userName, email, password) => {
             password2: password,
         };
         console.log(signUpData);
-        let url = 'http://users.dev.decorist.com/api/v1/accounts/signup/'
+        let url = 'https://users.dev.decorist.com/api/v1/accounts/signup/'
         axios.post(url, signUpData)
             .then(response => {
                 console.log(response);
