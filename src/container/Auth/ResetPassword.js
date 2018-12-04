@@ -5,8 +5,8 @@ import {
     FormGroup, Input,
     Button,
     } from 'reactstrap';
-import './App.css';
-import * as actions from './store/actions/resetPassword';
+import '../../App.css';
+import * as actions from '../../store/actions/auth';
 
 class ResetPassword extends Component{
     constructor(props) {
@@ -60,9 +60,9 @@ class ResetPassword extends Component{
 
 const mapStateToProps = state => {
     return {
-        status: state.resetPassword.status,
-        loading: state.resetPassword.loading,
-        error: state.resetPassword.error
+        status: state.status,
+        loading: state.loading,
+        error: state.error
     };
 };
   

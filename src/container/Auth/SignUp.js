@@ -5,8 +5,8 @@ import {
     FormGroup, Input,
     Button, FormFeedback, Row
     } from 'reactstrap';
-import * as actions from './store/actions/signUp';
-import './App.css';
+import * as actions from '../../store/actions/auth';
+import '../../App.css';
 
 const regExp = {
   email: /^[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/gi,
@@ -40,7 +40,7 @@ class SignUp extends Component{
     }
 
     logInHandler() {
-      this.props.afterLogIn();
+      this.props.clearAnyErrorMessage();
       this.props.openModal("logIn");
     }
 
@@ -148,16 +148,16 @@ class SignUp extends Component{
 
 const mapStateToProps = state => {
   return {
-      loading: state.signUp.loading,
-      error: state.signUp.error,
-      isSignedIn: state.signUp.token !== null
+      loading: state.loading,
+      error: state.error,
+      isSignedIn: state.token !== null
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
       onSignUp: (userName, email, password) => dispatch( actions.signUp(userName, email, password) ),
-      afterLogIn: () => dispatch(actions.clearErrorMessage())
+      clearAnyErrorMessage: () => dispatch(actions.clearErrorMessage())
   };
 };
 

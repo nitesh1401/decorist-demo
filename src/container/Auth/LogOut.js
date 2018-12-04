@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import Aux from './hoc/Aux';
+import Aux from '../../hoc/Aux';
 import { connect } from 'react-redux';
 import { DropdownItem } from 'reactstrap';
-import * as actions from './store/actions/logIn'
+import * as actions from '../../store/actions/auth'
 
 class LogOut extends Component {
     constructor(props) {
@@ -27,11 +27,10 @@ class LogOut extends Component {
 
 };
 
-const mapStateToProps = (state, ownProps) => {
+const mapStateToProps = (state) => {
     return {
-        loading: state.logIn.loading,
-        error: state.logIn.error,
-        cookies: ownProps.cookies
+        loading: state.loading,
+        error: state.error
     };
 };
   

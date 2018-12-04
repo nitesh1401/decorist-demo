@@ -5,10 +5,9 @@ import {
     FormGroup, Label, Input,
     Button, Row, FormFeedback
     } from 'reactstrap';
-import * as actions from './store/actions/logIn'
-import './App.css';
-import Aux from './hoc/Aux';
-import ResetPassword from './ResetPassword';
+import * as actions from '../../store/actions/auth'
+import '../../App.css';
+import Aux from '../../hoc/Aux';
 
 class LogIn extends Component {
     constructor(props) {
@@ -31,18 +30,18 @@ class LogIn extends Component {
     }
 
     signUpHandler(event) {
-        this.props.afterLogIn();
+        this.props.clearAnyErrorMessage();
         this.props.openModal("signUp");
     }
 
     resetPasswordHandler(event) {
+        this.props.clearAnyErrorMessage();
         this.props.openModal("resetPassword");
     }
 
     componentDidUpdate(prevProps) {
         if(this.props.isLoggedIn !== prevProps.isLoggedIn) {
-            // this.props.closeModal(this.props.userName);
-            this.props.openModal("logInMessage");
+            this.props.closeModal("");
         }
     }
 
@@ -141,17 +140,17 @@ class LogIn extends Component {
 }
 const mapStateToProps = state => {
     return {
-        loading: state.logIn.loading,
-        error: state.logIn.error,
-        isLoggedIn: state.logIn.token != null,
-        userName: state.logIn.userName
+        loading: state.loading,
+        error: state.error,
+        isLoggedIn: state.token != null,
+        userName: state.userName
     };
 };
   
 const mapDispatchToProps = dispatch => {
     return {
         onLogIn: (email, password) => dispatch( actions.logIn(email, password) ),
-        afterLogIn: () => dispatch(actions.clearErrorMessage())
+        clearAnyErrorMessage: () => dispatch(actions.clearErrorMessage())
     };
 };
   
