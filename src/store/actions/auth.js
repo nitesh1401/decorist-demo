@@ -31,7 +31,7 @@ export const logIn = (userName, password) => {
             username: userName,
             password: password
         };
-        let url = 'https://users.dev.decorist.me/api/v1/accounts/login/';
+        let url = 'https://decorist-dsp.appspot.com/api/v1/accounts/login/';
         let config = {
             withCredentials : true
         }
@@ -72,7 +72,7 @@ export const logOut = () => {
     return dispatch => {
         localStorage.removeItem('idToken');
         localStorage.removeItem('userName');
-        let url = 'https://users.dev.decorist.me/api/v1/accounts/logout/'
+        let url = 'https://decorist-dsp.appspot.com/api/v1/accounts/logout/'
         axios.get(url, {withCredentials: true})
             .then(response => {
                 dispatch(logOutSuccess());
