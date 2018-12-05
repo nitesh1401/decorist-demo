@@ -7,6 +7,8 @@ import {
     } from 'reactstrap';
 import * as actions from '../../store/actions/auth';
 import '../../App.css';
+import Spinner from '../../components/Spinner/Spinner';
+import Aux from '../../hoc/Aux'
 
 const regExp = {
   email: /^[a-z0-9!#$%&'*+\/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+\/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/gi,
@@ -29,13 +31,13 @@ class SignUp extends Component{
 
     submitHandler(event) {
       event.preventDefault();
-      this.props.onSignUp(this.state.firstName+this.state.lastName, this.state.email, this.state.password);
+      this.props.onSignUp(this.state.firstName, this.state.lastName, this.state.email, this.state.password);
     }
 
     componentDidUpdate(prevProps) {
       if(this.props.isSignedIn !== prevProps.isSignedIn) {
-          console.log("inside did update signUp: ", this.props.isSignedIn);
-          this.props.openModal("logIn");
+        this.props.onLogIn(localStorage.getItem('email'), localStorage.getItem('password'));
+        this.props.closeModal("");
       }
     }
 
@@ -54,14 +56,16 @@ class SignUp extends Component{
 
     render() {
       let errorMessage = null;
-
+      let signUpForm = null;
       if (this.props.error) {
           errorMessage = (
               <p style={{color:"red"}}>{this.props.error}</p>
           );
       }
-
-      return (
+      if (this.props.loading) {
+        signUpForm = <Spinner />;
+      } else {
+        signUpForm = (
           <Container className="App-header">
           <h2 className="text-center">Sign Up</h2>
           {errorMessage}
@@ -141,7 +145,14 @@ class SignUp extends Component{
               Already a Member? <a href="#" onClick={this.logInHandler}> Log In </a>
               </Col>
           </Row>
-        </Container>  
+        </Container> 
+        );
+      }
+
+      return (
+        <Aux>
+          {signUpForm}
+        </Aux>
       );
     }
 }
@@ -156,7 +167,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-      onSignUp: (userName, email, password) => dispatch( actions.signUp(userName, email, password) ),
+      onSignUp: (firstName, lastName, email, password) => dispatch( actions.signUp(firstName, lastName, email, password) ),
+      onLogIn: (email, password) => dispatch( actions.logIn(email, password) ),
       clearAnyErrorMessage: () => dispatch(actions.clearErrorMessage())
   };
 };

@@ -31,19 +31,22 @@ export const logIn = (userName, password) => {
             username: userName,
             password: password
         };
+        axios.defaults.xsrfHeaderName = "X-CSRFToken";
+        axios.defaults.xsrfCookieName = 'csrftoken';
         let url = 'https://decorist-dsp.appspot.com/api/v1/accounts/login/';
         let config = {
             withCredentials : true
         }
         axios.post(url, logInData, config)
             .then(response => {
+                console.log(parseJwt(response.data));
                 let firstName = parseJwt(response.data).first_name;
                 localStorage.setItem("idToken",response.data);
                 localStorage.setItem("userName",firstName);
                 dispatch(logInSuccess(response.data, firstName));
             })
             .catch(err => {
-                dispatch(logInFail("LogIn Failed"));
+                dispatch(logInFail("Invalid Username or Password"));
             });
     };
 };
@@ -70,10 +73,14 @@ export const logOutSuccess = () => {
 
 export const logOut = () => {
     return dispatch => {
+        let url = 'https://decorist-dsp.appspot.com/api/v1/accounts/logout/';
+        let config = {
+            withCredentials: true,
+            headers: { Authorization: `JWT ${localStorage.getItem('idToken')}` }
+        }
         localStorage.removeItem('idToken');
         localStorage.removeItem('userName');
-        let url = 'https://decorist-dsp.appspot.com/api/v1/accounts/logout/'
-        axios.get(url, {withCredentials: true})
+        axios.get(url, config)
             .then(response => {
                 dispatch(logOutSuccess());
             })
@@ -121,18 +128,22 @@ export const signUpFail = (error) => {
 //     };
 // };
 
-export const signUp = (userName, email, password) => {
+export const signUp = (firstName, lastName, email, password) => {
     return dispatch => {
         dispatch(signUpStart());
         const signUpData = {
-            username: userName,
+            username: email,
             email: email,
             password1: password,
             password2: password,
+            firstname: firstName,
+            lastname: lastName
         };
         let url = 'https://decorist-dsp.appspot.com/api/v1/accounts/signup/'
         axios.post(url, signUpData)
             .then(response => {
+                localStorage.setItem("email", email);
+                localStorage.setItem("password", password);
                 console.log(response);
                 dispatch(signUpSuccess(response.data));
                 // dispatch(checkAuthTimeout(response.data.expiresIn));
