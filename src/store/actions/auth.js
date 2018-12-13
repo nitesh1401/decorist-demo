@@ -2,6 +2,7 @@ import axios from 'axios';
 import { parseJwt } from '../utility';
 import * as actionTypes from './actionTypes';
 
+
 // Log In starts
 export const logInStart = () => {
     return {
@@ -31,9 +32,7 @@ export const logIn = (userName, password) => {
             username: userName,
             password: password
         };
-        axios.defaults.xsrfHeaderName = "X-CSRFToken";
-        axios.defaults.xsrfCookieName = 'csrftoken';
-        let url = 'https://decorist-dsp.appspot.com/api/v1/accounts/login/';
+        let url = 'http://users.dev.decorist.me/api/v1/accounts/login/';
         let config = {
             withCredentials : true
         }
@@ -73,7 +72,7 @@ export const logOutSuccess = () => {
 
 export const logOut = () => {
     return dispatch => {
-        let url = 'https://decorist-dsp.appspot.com/api/v1/accounts/logout/';
+        let url = 'http://users.dev.decorist.me/api/v1/accounts/logout/';
         let config = {
             withCredentials: true,
             headers: { Authorization: `JWT ${localStorage.getItem('idToken')}` }
@@ -139,7 +138,7 @@ export const signUp = (firstName, lastName, email, password) => {
             firstname: firstName,
             lastname: lastName
         };
-        let url = 'https://decorist-dsp.appspot.com/api/v1/accounts/signup/'
+        let url = 'http://users.dev.decorist.me/api/v1/accounts/signup/'
         axios.post(url, signUpData)
             .then(response => {
                 localStorage.setItem("email", email);
