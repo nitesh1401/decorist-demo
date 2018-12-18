@@ -8,7 +8,7 @@ import Home from './Home';
 import * as actions from './store/actions/auth';
 import Aux from './hoc/Aux';
 
-class App extends Component {
+export class App extends Component {
   constructor(props) {
     super(props);
   }
