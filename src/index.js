@@ -22,11 +22,11 @@ import authReducer from './store/reducers/auth';
 const store = createStore(authReducer, applyMiddleware(thunk));
 
 const app = (
-    <Provider store={store}>
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>
-    </Provider>
+  <Provider store={store}>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </Provider>
 );
 
 ReactDOM.render(app, document.getElementById('root'));
